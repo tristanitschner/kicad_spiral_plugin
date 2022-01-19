@@ -87,7 +87,7 @@ class MyPanel12 ( wx.Panel ):
 
 		gSizer17 = wx.GridSizer( 0, 2, 0, 0 )
 
-		self.m_staticText14 = wx.StaticText( self, wx.ID_ANY, u"Start diameter (in mm)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText14 = wx.StaticText( self, wx.ID_ANY, u"Start radius (in mm)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText14.Wrap( -1 )
 
 		gSizer17.Add( self.m_staticText14, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
