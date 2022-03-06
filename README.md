@@ -11,7 +11,7 @@ See here for where to put the top directory:
 
 ## User Interface
 
-Besides adding tracks in a spiral shape according to the parameters given in the pop-up menu, which are basically self-explanatory, it adds the tracks to a group, such that the whole spiral can be selected. You can also give the spiral some name, and select its netname and layer. _However, keep in mind that KiCad sees this spiral as a track and not a footprint, therefore be careful on how you are supposed to connect the ends of the coils; the ratsnest won't help you._
+Besides adding tracks in a spiral shape according to the parameters given in the pop-up menu, which are basically self-explanatory, it adds the tracks to a group, such that the whole spiral can be selected. You can also give the spiral some name, and select its netname and layer. _However, keep in mind that KiCad sees this spiral as a track and not a footprint, therefore be careful when connecting the ends of the spiral; the ratsnest won't help you._
 
 ## Examples
 
@@ -19,6 +19,15 @@ Besides adding tracks in a spiral shape according to the parameters given in the
 
 <img src="images/spiral1.png" alt="spiral1" width="400"/>
 <img src="images/spiral2.png" alt="spiral2" width="400"/>
+
+## Similar Projects
+
+(None of which were integrated into the KiCAD GUI, which was my primary motivation.)
+
+* <https://github.com/in3otd/spiki>
+* <https://gist.github.com/JoanTheSpark/e5afd7081d9d1b9ad91a>
+
+The KiCAD team is also already up to it: <https://gitlab.com/kicad/code/kicad-footprint-wizards/-/issues/6>
 
 ## Why?
 
