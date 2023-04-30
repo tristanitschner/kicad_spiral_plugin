@@ -2,9 +2,8 @@
 
 from .interface import *
 from math       import *
-from pcbnew     import *
+import pcbnew
 import os
-import time
 import wx
 
 class MyFrame(wx.Frame):
@@ -54,23 +53,23 @@ class MyPanel(MyPanel12):
         self.bSizer2.AddGrowableCol(0)
         self.bSizer2.AddGrowableRow(0)
 
-        netcount = GetBoard().GetNetInfo().GetNetCount()
+        netcount = pcbnew.GetBoard().GetNetInfo().GetNetCount()
         # the length of the two following variables is the same
-        netnames = GetBoard().GetNetInfo().NetsByName().keys()
+        netnames = pcbnew.GetBoard().GetNetInfo().NetsByName().keys()
         # .items() contains a list of 2-tuples containing first the name and second the NETINFO_ITEM, needed to set the netclass
-        self.netitems = GetBoard().GetNetInfo().NetsByName().items()
+        self.netitems = pcbnew.GetBoard().GetNetInfo().NetsByName().items()
 
         for ii in range(netcount):
             self.m_choice3.Append(str(netnames[ii]))
         layers = []
-        i = PCBNEW_LAYER_ID_START
-        while i < PCBNEW_LAYER_ID_START + GetBoard().GetCopperLayerCount() - 1:
-            layers.append(BOARD_GetStandardLayerName(i))
+        i = pcbnew.PCBNEW_LAYER_ID_START
+        while i < pcbnew.PCBNEW_LAYER_ID_START + pcbnew.GetBoard().GetCopperLayerCount() - 1:
+            layers.append(pcbnew.BOARD_GetStandardLayerName(i))
             i += 1
-        layers.append(BOARD_GetStandardLayerName(PCBNEW_LAYER_ID_START + 31))
+        layers.append(pcbnew.BOARD_GetStandardLayerName(pcbnew.PCBNEW_LAYER_ID_START + 31))
         for ii in range(len(layers)):
             self.m_choice31.Append(str(layers[ii]))
-        if GetUserUnits() == EDA_UNITS_INCHES:
+        if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
             self.m_staticText15.SetLabel("in")
             self.m_staticText16.SetLabel("in")
             self.m_staticText17.SetLabel("in")
@@ -78,10 +77,10 @@ class MyPanel(MyPanel12):
             self.m_staticText21.SetLabel("in")
             # set sane defaults
             # track width
-            self.m_textCtrl4.SetValue(str(ToMils(FromMM(float(self.m_textCtrl4.GetValue()))/1000)))
+            self.m_textCtrl4.SetValue(str(pcbnew.ToMils(pcbnew.FromMM(float(self.m_textCtrl4.GetValue()))/1000)))
             # distance between tracks
-            self.m_textCtrl5.SetValue(str(ToMils(FromMM(float(self.m_textCtrl5.GetValue()))/1000)))
-        elif GetUserUnits() == EDA_UNITS_MILS:
+            self.m_textCtrl5.SetValue(str(pcbnew.ToMils(pcbnew.FromMM(float(self.m_textCtrl5.GetValue()))/1000)))
+        elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
             self.m_staticText15.SetLabel("mil")
             self.m_staticText16.SetLabel("mil")
             self.m_staticText17.SetLabel("mil")
@@ -102,10 +101,16 @@ class MyPanel(MyPanel12):
         self.UpdateSelection()
 
     def AddTrack(self, x0, y0, x1, y1):
-        b = GetBoard()
-        t = PCB_TRACK(b)
-        t.SetStart(wxPoint(x0,y0))
-        t.SetEnd(wxPoint(x1,y1))
+        b = pcbnew.GetBoard()
+        t = pcbnew.PCB_TRACK(b)
+        version = pcbnew.Version()
+        print(version)
+        if version.startswith("6") or version.startswith("5"):
+            t.SetStart(pcbnew.wxPoint(x0,y0))
+            t.SetEnd(pcbnew.wxPoint(x1,y1))
+        else:
+            t.SetStart(pcbnew.VECTOR2I(int(x0),int(y0)))
+            t.SetEnd(pcbnew.VECTOR2I(int(x1),int(y1)))
         t.SetWidth(self.trackwidth)
         t.SetNet(self.netitems[self.chosen_netitem][1])
         t.SetLayer(self.chosen_layer)
@@ -130,18 +135,18 @@ class MyPanel(MyPanel12):
 
     def OnOk(self, event):
         self.nturn             = int(float(self.m_textCtrl1.GetValue()))
-        if GetUserUnits() == EDA_UNITS_INCHES:
-            self.center_x          = int(FromMils(float(self.m_textCtrl19.GetValue())*1000))
-            self.center_y          = int(FromMils(float(self.m_textCtrl10.GetValue())*1000))
-            self.start_radius      = int(FromMils(float(self.m_textCtrl12.GetValue())*1000))
-            self.trackwidth        = int(FromMils(float(self.m_textCtrl4.GetValue())*1000))
-            self.dtracks           = int(FromMils(float(self.m_textCtrl5.GetValue())*1000))
-        elif GetUserUnits() == EDA_UNITS_MILS:
-            self.center_x          = int(FromMils(float(self.m_textCtrl19.GetValue())))
-            self.center_y          = int(FromMils(float(self.m_textCtrl10.GetValue())))
-            self.start_radius      = int(FromMils(float(self.m_textCtrl12.GetValue())))
-            self.trackwidth        = int(FromMils(float(self.m_textCtrl4.GetValue())))
-            self.dtracks           = int(FromMils(float(self.m_textCtrl5.GetValue())))
+        if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
+            self.center_x          = int(pcbnew.FromMils(float(self.m_textCtrl19.GetValue())*1000))
+            self.center_y          = int(pcbnew.FromMils(float(self.m_textCtrl10.GetValue())*1000))
+            self.start_radius      = int(pcbnew.FromMils(float(self.m_textCtrl12.GetValue())*1000))
+            self.trackwidth        = int(pcbnew.FromMils(float(self.m_textCtrl4.GetValue())*1000))
+            self.dtracks           = int(pcbnew.FromMils(float(self.m_textCtrl5.GetValue())*1000))
+        elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
+            self.center_x          = int(pcbnew.FromMils(float(self.m_textCtrl19.GetValue())))
+            self.center_y          = int(pcbnew.FromMils(float(self.m_textCtrl10.GetValue())))
+            self.start_radius      = int(pcbnew.FromMils(float(self.m_textCtrl12.GetValue())))
+            self.trackwidth        = int(pcbnew.FromMils(float(self.m_textCtrl4.GetValue())))
+            self.dtracks           = int(pcbnew.FromMils(float(self.m_textCtrl5.GetValue())))
         else: # millimeters
             self.center_x          = int(1000000.0*float(self.m_textCtrl19.GetValue()))
             self.center_y          = int(1000000.0*float(self.m_textCtrl10.GetValue()))
@@ -158,19 +163,19 @@ class MyPanel(MyPanel12):
         self.counterclockwise  = self.m_toggleBtn3.GetValue()
         self.chosen_netitem    = self.m_choice3.GetSelection()
         layer_selection        = self.m_choice31.GetSelection()
-        if (layer_selection == GetBoard().GetCopperLayerCount() - 1):
-            self.chosen_layer = PCBNEW_LAYER_ID_START + 31
+        if (layer_selection == pcbnew.GetBoard().GetCopperLayerCount() - 1):
+            self.chosen_layer = pcbnew.PCBNEW_LAYER_ID_START + 31
         else:
-            self.chosen_layer = PCBNEW_LAYER_ID_START + layer_selection
+            self.chosen_layer = pcbnew.PCBNEW_LAYER_ID_START + layer_selection
 
-        g = PCB_GROUP(GetBoard())
+        g = pcbnew.PCB_GROUP(pcbnew.GetBoard())
         g.thisown = 0
         for i in range(self.nturn * self.segments_per_turn + self.additional_segments):
             t = self.AddTrack(*self.Position(i), *self.Position(i + 1))
             g.AddItem(t)
         g.SetName(self.group_name)
-        GetBoard().Groups().append(g)
-        Refresh()
+        pcbnew.GetBoard().Groups().append(g)
+        pcbnew.Refresh()
         wx.MessageBox("Spiral added!")
 
     def OnToggleTurningDirection(self, event):
@@ -192,8 +197,9 @@ class MyPanel(MyPanel12):
         self.UpdateSelection()
 
     def UpdateSelection(self):
-        selected_groups = [x for x in list(GetBoard().Groups()) if x.IsSelected()]
-        selected_items = [x for x in GetBoard().GetTracks() + GetBoard().GetFootprints() + list(GetBoard().GetPads()) if x.IsSelected()]
+        selected_groups = [x for x in list(pcbnew.GetBoard().Groups()) if x.IsSelected()]
+        selected_items = [x for x in pcbnew.GetBoard().GetTracks() +
+                pcbnew.GetBoard().GetFootprints() + list(pcbnew.GetBoard().GetPads()) if x.IsSelected()]
         #wx.MessageBox(str(selected_items))
         # WE ONLY SUPPORT EITHER ONE SELECTED ITEM OR ONE SELECTED GROUP
         # How is a selection internally represented?
@@ -205,27 +211,27 @@ class MyPanel(MyPanel12):
             # results is a segfault, as thisown = 1 and it gets deleted upon
             # leaving this function
             x, y = selected_groups[0].GetBoundingBox().GetCenter()
-            if GetUserUnits() == EDA_UNITS_INCHES:
+            if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
                 self.m_textCtrl19.SetValue(str(ToMils(x)/1000))
                 self.m_textCtrl10.SetValue(str(ToMils(y)/1000))
-            elif GetUserUnits() == EDA_UNITS_MILS:
+            elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
                 self.m_textCtrl19.SetValue(str(ToMils(x)))
                 self.m_textCtrl10.SetValue(str(ToMils(y)))
             else:
                 self.m_textCtrl19.SetValue(str(ToMM(x)))
                 self.m_textCtrl10.SetValue(str(ToMM(y)))
         elif (selected_items):
-            if GetUserUnits() == EDA_UNITS_INCHES:
+            if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
                 self.m_textCtrl19.SetValue(str(ToMils(selected_items[0].GetPosition()[0])/1000))
                 self.m_textCtrl10.SetValue(str(ToMils(selected_items[0].GetPosition()[1])/1000))
-            elif GetUserUnits() == EDA_UNITS_MILS:
+            elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
                 self.m_textCtrl19.SetValue(str(ToMils(selected_items[0].GetPosition()[0])))
                 self.m_textCtrl10.SetValue(str(ToMils(selected_items[0].GetPosition()[1])))
             else: # millimeters
                 self.m_textCtrl19.SetValue(str(ToMM(selected_items[0].GetPosition()[0])))
                 self.m_textCtrl10.SetValue(str(ToMM(selected_items[0].GetPosition()[1])))
 
-class SpiralPlugin(ActionPlugin):
+class SpiralPlugin(pcbnew.ActionPlugin):
     def defaults(self):
         self.name = "Spiral"
         self.category = "Modify PCB"
