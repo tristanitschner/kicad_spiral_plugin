@@ -63,10 +63,17 @@ class MyPanel(MyPanel12):
             self.m_choice3.Append(str(netnames[ii]))
         layers = []
         i = pcbnew.PCBNEW_LAYER_ID_START
-        while i < pcbnew.PCBNEW_LAYER_ID_START + pcbnew.GetBoard().GetCopperLayerCount() - 1:
-            layers.append(pcbnew.BOARD_GetStandardLayerName(i))
-            i += 1
-        layers.append(pcbnew.BOARD_GetStandardLayerName(pcbnew.PCBNEW_LAYER_ID_START + 31))
+        version = pcbnew.Version()
+        if (version.startswith("7.0")):
+            while i < pcbnew.PCBNEW_LAYER_ID_START + pcbnew.GetBoard().GetCopperLayerCount() - 1:
+                layers.append(pcbnew.BOARD.GetStandardLayerName(i))
+                i += 1
+            layers.append(pcbnew.BOARD.GetStandardLayerName(pcbnew.PCBNEW_LAYER_ID_START + 31))
+        else:
+            while i < pcbnew.PCBNEW_LAYER_ID_START + pcbnew.GetBoard().GetCopperLayerCount() - 1:
+                layers.append(pcbnew.BOARD_GetStandardLayerName(i))
+                i += 1
+            layers.append(pcbnew.BOARD_GetStandardLayerName(pcbnew.PCBNEW_LAYER_ID_START + 31))
         for ii in range(len(layers)):
             self.m_choice31.Append(str(layers[ii]))
         if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
