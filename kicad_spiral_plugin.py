@@ -89,9 +89,9 @@ class MyPanel(MyPanel12):
             self.m_staticText21.SetLabel("mil")
             # set sane defaults
             # track width
-            self.m_textCtrl4.SetValue(str(ToMils(FromMM(float(self.m_textCtrl4.GetValue())))))
+            self.m_textCtrl4.SetValue(str(pcbnew.ToMils(pcbnew.FromMM(float(self.m_textCtrl4.GetValue())))))
             # distance between tracks
-            self.m_textCtrl5.SetValue(str(ToMils(FromMM(float(self.m_textCtrl5.GetValue())))))
+            self.m_textCtrl5.SetValue(str(pcbnew.ToMils(pcbnew.FromMM(float(self.m_textCtrl5.GetValue())))))
         else:
             self.m_staticText15.SetLabel("mm")
             self.m_staticText16.SetLabel("mm")
@@ -213,24 +213,24 @@ class MyPanel(MyPanel12):
             # leaving this function
             x, y = selected_groups[0].GetBoundingBox().GetCenter()
             if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
-                self.m_textCtrl19.SetValue(str(ToMils(x)/1000))
-                self.m_textCtrl10.SetValue(str(ToMils(y)/1000))
+                self.m_textCtrl19.SetValue(str(pcbnew.ToMils(x)/1000))
+                self.m_textCtrl10.SetValue(str(pcbnew.ToMils(y)/1000))
             elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
-                self.m_textCtrl19.SetValue(str(ToMils(x)))
-                self.m_textCtrl10.SetValue(str(ToMils(y)))
+                self.m_textCtrl19.SetValue(str(pcbnew.ToMils(x)))
+                self.m_textCtrl10.SetValue(str(pcbnew.ToMils(y)))
             else:
-                self.m_textCtrl19.SetValue(str(ToMM(x)))
-                self.m_textCtrl10.SetValue(str(ToMM(y)))
+                self.m_textCtrl19.SetValue(str(pcbnew.ToMM(x)))
+                self.m_textCtrl10.SetValue(str(pcbnew.ToMM(y)))
         elif (selected_items):
             if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
-                self.m_textCtrl19.SetValue(str(ToMils(selected_items[0].GetPosition()[0])/1000))
-                self.m_textCtrl10.SetValue(str(ToMils(selected_items[0].GetPosition()[1])/1000))
+                self.m_textCtrl19.SetValue(str(pcbnew.ToMils(selected_items[0].GetPosition()[0])/1000))
+                self.m_textCtrl10.SetValue(str(pcbnew.ToMils(selected_items[0].GetPosition()[1])/1000))
             elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
-                self.m_textCtrl19.SetValue(str(ToMils(selected_items[0].GetPosition()[0])))
-                self.m_textCtrl10.SetValue(str(ToMils(selected_items[0].GetPosition()[1])))
+                self.m_textCtrl19.SetValue(str(pcbnew.ToMils(selected_items[0].GetPosition()[0])))
+                self.m_textCtrl10.SetValue(str(pcbnew.ToMils(selected_items[0].GetPosition()[1])))
             else: # millimeters
-                self.m_textCtrl19.SetValue(str(ToMM(selected_items[0].GetPosition()[0])))
-                self.m_textCtrl10.SetValue(str(ToMM(selected_items[0].GetPosition()[1])))
+                self.m_textCtrl19.SetValue(str(pcbnew.ToMM(selected_items[0].GetPosition()[0])))
+                self.m_textCtrl10.SetValue(str(pcbnew.ToMM(selected_items[0].GetPosition()[1])))
 
 class SpiralPlugin(pcbnew.ActionPlugin):
     def defaults(self):
