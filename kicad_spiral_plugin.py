@@ -62,13 +62,12 @@ class MyPanel(MyPanel12):
         for ii in range(netcount):
             self.m_choice3.Append(str(netnames[ii]))
 
-        layers = []
-        for i in range(pcbnew.GetBoard().GetCopperLayerCount()-1):
-            layers.append(pcbnew.GetBoard().GetLayerName(i))
-        layers.append(pcbnew.GetBoard().GetLayerName(31)) # last layer has a fixed ID=31
+        self.layers = []
+        for i in pcbnew.GetBoard().GetEnabledLayers().CuStack():
+            self.layers.append(i)
 
-        for ii in range(len(layers)):
-            self.m_choice31.Append(str(layers[ii]))
+        for ii in range(len(self.layers)):
+            self.m_choice31.Append(str(pcbnew.GetBoard().GetLayerName(self.layers[ii])))
 
         if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCH:
             self.m_staticText15.SetLabel("in")
@@ -163,11 +162,7 @@ class MyPanel(MyPanel12):
         self.group_name        = self.m_textCtrl6.GetValue()
         self.counterclockwise  = self.m_toggleBtn3.GetValue()
         self.chosen_netitem    = self.m_choice3.GetSelection()
-        layer_selection        = self.m_choice31.GetSelection()
-        if (layer_selection == pcbnew.GetBoard().GetCopperLayerCount() - 1):
-            self.chosen_layer = pcbnew.PCBNEW_LAYER_ID_START + 31
-        else:
-            self.chosen_layer = pcbnew.PCBNEW_LAYER_ID_START + layer_selection
+        self.chosen_layer      = self.layers[self.m_choice31.GetSelection()]
 
         g = pcbnew.PCB_GROUP(pcbnew.GetBoard())
         g.thisown = 0
