@@ -1,3 +1,9 @@
+IMPORTANT:
+
+Apparently somebody has used AISlop to copy my code:
+
+<https://github.com/upb-lea/kicad_planar_winding_generator>
+
 # Kicad Spiral Plugin
 A KiCad Plugin for Drawing PCB Tracks in Spiral Shape
 
