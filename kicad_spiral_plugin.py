@@ -62,15 +62,14 @@ class MyPanel(MyPanel12):
         for ii in range(netcount):
             self.m_choice3.Append(str(netnames[ii]))
 
-        layers = []
-        for i in range(pcbnew.GetBoard().GetCopperLayerCount()-1):
-            layers.append(pcbnew.GetBoard().GetLayerName(i))
-        layers.append(pcbnew.GetBoard().GetLayerName(31)) # last layer has a fixed ID=31
+        self.layers = []
+        for i in pcbnew.GetBoard().GetEnabledLayers().CuStack():
+            self.layers.append(i)
 
-        for ii in range(len(layers)):
-            self.m_choice31.Append(str(layers[ii]))
+        for ii in range(len(self.layers)):
+            self.m_choice31.Append(str(pcbnew.GetBoard().GetLayerName(self.layers[ii])))
 
-        if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
+        if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCH:
             self.m_staticText15.SetLabel("in")
             self.m_staticText16.SetLabel("in")
             self.m_staticText17.SetLabel("in")
@@ -136,7 +135,7 @@ class MyPanel(MyPanel12):
 
     def OnOk(self, event):
         self.nturn             = int(float(self.m_textCtrl1.GetValue()))
-        if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
+        if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCH:
             self.center_x          = int(pcbnew.FromMils(float(self.m_textCtrl19.GetValue())*1000))
             self.center_y          = int(pcbnew.FromMils(float(self.m_textCtrl10.GetValue())*1000))
             self.start_radius      = int(pcbnew.FromMils(float(self.m_textCtrl12.GetValue())*1000))
@@ -163,11 +162,7 @@ class MyPanel(MyPanel12):
         self.group_name        = self.m_textCtrl6.GetValue()
         self.counterclockwise  = self.m_toggleBtn3.GetValue()
         self.chosen_netitem    = self.m_choice3.GetSelection()
-        layer_selection        = self.m_choice31.GetSelection()
-        if (layer_selection == pcbnew.GetBoard().GetCopperLayerCount() - 1):
-            self.chosen_layer = pcbnew.PCBNEW_LAYER_ID_START + 31
-        else:
-            self.chosen_layer = pcbnew.PCBNEW_LAYER_ID_START + layer_selection
+        self.chosen_layer      = self.layers[self.m_choice31.GetSelection()]
 
         g = pcbnew.PCB_GROUP(pcbnew.GetBoard())
         g.thisown = 0
@@ -175,7 +170,6 @@ class MyPanel(MyPanel12):
             t = self.AddTrack(*self.Position(i), *self.Position(i + 1))
             g.AddItem(t)
         g.SetName(self.group_name)
-        pcbnew.GetBoard().Groups().append(g)
         pcbnew.Refresh()
         wx.MessageBox("Spiral added!")
 
@@ -212,7 +206,7 @@ class MyPanel(MyPanel12):
             # results is a segfault, as thisown = 1 and it gets deleted upon
             # leaving this function
             x, y = selected_groups[0].GetBoundingBox().GetCenter()
-            if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
+            if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCH:
                 self.m_textCtrl19.SetValue(str(pcbnew.ToMils(x)/1000))
                 self.m_textCtrl10.SetValue(str(pcbnew.ToMils(y)/1000))
             elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
@@ -222,7 +216,7 @@ class MyPanel(MyPanel12):
                 self.m_textCtrl19.SetValue(str(pcbnew.ToMM(x)))
                 self.m_textCtrl10.SetValue(str(pcbnew.ToMM(y)))
         elif (selected_items):
-            if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCHES:
+            if pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_INCH:
                 self.m_textCtrl19.SetValue(str(pcbnew.ToMils(selected_items[0].GetPosition()[0])/1000))
                 self.m_textCtrl10.SetValue(str(pcbnew.ToMils(selected_items[0].GetPosition()[1])/1000))
             elif pcbnew.GetUserUnits() == pcbnew.EDA_UNITS_MILS:
