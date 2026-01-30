@@ -15,9 +15,9 @@ A KiCad Plugin for Drawing PCB Tracks in Spiral Shape
 
 ## Installation
 
-See here for where to put the top directory:
+Place a folder with this repository into your KiCad plugins folder. 
 
-<https://dev-docs.kicad.org/en/python/pcbnew/>
+You can find the plugin folder for your system here: <https://dev-docs.kicad.org/en/apis-and-binding/pcbnew/index.html>
 
 ## User Interface
 
