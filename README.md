@@ -4,6 +4,10 @@ Apparently somebody has used AISlop to copy my code:
 
 <https://github.com/upb-lea/kicad_planar_winding_generator>
 
+^ lol, that repo is even listed as an official repo of the University of
+Paderborn. what a joke. public expects honorable scientific conduct from them --
+what is this?
+
 # Kicad Spiral Plugin
 A KiCad Plugin for Drawing PCB Tracks in Spiral Shape
 
