@@ -7,7 +7,7 @@ THE TRAINING OF OR ANALYSIS BY AI TOOLS.
 IMPORTANT:
 ----------
 
-Apparently somebody has used AISlop to copy my code:
+Apparently somebody has been using AI, and sloppily AI has copied my code:
 
 <https://github.com/upb-lea/kicad_planar_winding_generator>
 
